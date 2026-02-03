@@ -1,36 +1,39 @@
 {
   "name": "@tu-org/space-vue-client",
-  "type": "module",
   "version": "0.1.0",
-  "description": "Vue client for SPACE-style feature gating using pricing tokens (token-only or connected mode)",
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Vue 2 client for SPACE-style feature gating using pricing tokens",
+  "main": "dist/space-vue-client.umd.js",
+  "module": "dist/space-vue-client.es.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Pricing4SaaS-alternative-technologies/space-vue-client"
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": "./dist/space-vue-client.es.js",
+      "require": "./dist/space-vue-client.umd.js",
+      "types": "./dist/types/index.d.ts"
     }
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --declaration --emitDeclarationOnly && vite build",
+    "dev": "rollup -c rollup.config.mjs -w",
+    "build": "rollup -c rollup.config.mjs",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "build:all": "npm run build && npm run build:types",
     "test": "vitest",
-    "lint": "echo \"add eslint if needed\"",
-    "prepare": "npm run build",
-    "clean:install": "rm -rf node_modules dist && npm install",
-    "clean:install:win": "Remove-Item -Recurse -Force node_modules,dist -ErrorAction SilentlyContinue; npm install"
+    "clean": "rm -rf dist",
+    "clean:win": "rmdir /s /q dist",
+    "prepack": "npm run build && npm run build:types",
+    "prepublishOnly": "npm run build && npm run build:types"
   },
   "keywords": [
     "vue",
+    "vue2",
     "feature-flags",
     "feature-gating",
     "pricing",
@@ -41,25 +44,31 @@
   "license": "MIT",
   "author": "Daniel Benito Hidalgo danbenhid@alum.us.es Pablo Jesus Castellanos Compaña pabcascom@alum.us.es Fernando Jose de Celis Hurtado ferdehur@alum.us.es",
   "peerDependencies": {
-    "vue": "^3.3.0"
+    "vue": "^2.5.0 || ^2.6.0 || ^2.7.0"
   },
   "dependencies": {
     "jwt-decode": "^4.0.0",
     "tiny-emitter": "^2.1.0",
+    "axios": "^1.6.0",
     "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "@vitejs/plugin-vue": "^4.3.0",
-    "typescript": "^5.3.0",
-    "vite": "^5.0.0",
-    "vue": "^3.3.0",
-    "vue-tsc": "^1.8.0",
-    "vitest": "^1.2.0",
-    "@types/tiny-emitter": "^2.0.3",
-    "@types/socket.io-client": "^3.0.0"
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.3",
+    "@rollup/plugin-typescript": "^11.1.5",
+    "rollup": "^3.29.5",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-vue": "^5.1.9",
+    "tslib": "^2.6.2",
+    "typescript": "^4.9.5",
+    "vue": "^2.7.14",
+    "vue-template-compiler": "^2.7.14",
+    "vitest": "^0.34.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
   }
 }

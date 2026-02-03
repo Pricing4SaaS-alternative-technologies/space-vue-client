@@ -1,42 +1,32 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
+    "target": "ES2015",
     "module": "ESNext",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "skipLibCheck": true,
-    
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "preserve",
-    "types": ["node"],
-    
-    /* Linting */
+    "lib": ["ES2015", "DOM", "DOM.Iterable"],
+    "declaration": true,
+    "declarationDir": "./dist/types",
+    "outDir": "./dist",
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    
-    /* Paths */
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/main/*"]
     },
-    
-    /* Vue JSX (si usas JSX) - OPCIONAL */
-    "jsxImportSource": "vue"
+    "types": ["node"]
   },
   "include": [
     "src/main/**/*.ts",
-    "src/main/**/*.tsx", 
     "src/main/**/*.vue",
-    "src/test/**/*.ts",
-    "src/test/**/*.tsx",
-    "shims-vue.d.ts"
+    "src/main/**/*.d.ts"
   ],
-  "exclude": ["node_modules", "dist"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts"
+  ]
 }
