@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "types": ["node"],
+    
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    
+    /* Paths */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/main/*"]
+    },
+    
+    /* Vue JSX (si usas JSX) - OPCIONAL */
+    "jsxImportSource": "vue"
+  },
+  "include": [
+    "src/main/**/*.ts",
+    "src/main/**/*.tsx", 
+    "src/main/**/*.vue",
+    "src/test/**/*.ts",
+    "src/test/**/*.tsx",
+    "shims-vue.d.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}
