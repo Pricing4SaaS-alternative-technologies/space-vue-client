@@ -1,25 +1,21 @@
-/*import { useContext } from 'react';
-import { SpaceContext } from '../contexts/SpaceContext';
-import type { SpaceClient } from '../clients/SpaceClient';*/
+import { inject } from 'vue';
+import { SpaceContextKey } from '../contexts/SpaceContextTypes'; 
+import type { SpaceClient } from '../clients/SpaceClient';
 
-/**
- * Custom hook to access the SpaceClient instance from context.
- * Throws an error if used outside of SpaceProvider.
- */
 export function useSpaceClient(): SpaceClient {
-  const spaceContext = useContext(SpaceContext);
-  if (!spaceContext) {
+  const spaceContextRef = inject(SpaceContextKey);
+
+  if (!spaceContextRef) {
     throw new Error('useSpaceClient must be used within a SpaceProvider');
   }
 
-  if (!spaceContext.client) {
+  const context = spaceContextRef.value;
+
+  if (!context || !context.client) {
     throw new Error(
-      `SpaceClient is not initialized, so it cannot be instanciated. 
-      If you want to allow direct connection with the SPACE instance, 
-      ensure that you configuration has allowConnectionWithSpace = true, 
-      and url and apiKey provided.`,
+      `SpaceClient is not initialized... (tu mensaje de error)`
     );
   }
 
-  return spaceContext.client as SpaceClient;
+  return context.client as SpaceClient;
 }

@@ -1,10 +1,10 @@
 ﻿// src/main/index.ts - VERSIÓN TEMPORAL
-export { SpaceProvider } from './contexts/SpaceContext';
+export { default as SpaceProvider } from './contexts/SpaceContext.vue';
 
 export { useSpaceClient } from './hooks/useSpaceClient';
 export { useTokenService } from './hooks/useTokenService';
 export { usePricingTokenPayload } from './hooks/usePricingTokenPayload';
 
-export { Feature, On, Default, Loading, ErrorFallback } from './components/Feature';
+export { default as Feature } from './components/Feature.vue';
 
 export type * from './types';
