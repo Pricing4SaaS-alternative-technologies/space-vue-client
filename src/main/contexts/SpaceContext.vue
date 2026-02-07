@@ -27,16 +27,10 @@ watch(
   // Observamos las propiedades individuales igual que en el array de dependencias de React
   () => [props.config.url, props.config.apiKey, props.config.allowConnectionWithSpace],
   () => {
-    // 1. Limpieza del cliente anterior (Cleanup)
-    if (currentClient?.disconnectWebSocket) {
-      currentClient.disconnectWebSocket();
-    }
 
-    // 2. Creación del nuevo cliente
     const denyConnection = props.config.allowConnectionWithSpace === false;
     const client = denyConnection ? undefined : new SpaceClientClass(props.config);
     
-    // Gestión del TokenService
     let tokenService: TokenService;
     if (!client) {
       tokenService = new TokenService();
@@ -44,19 +38,11 @@ watch(
       tokenService = client.token;
     }
 
-    // Guardamos la referencia local y actualizamos el contexto
     currentClient = client;
     contextValue.value = { client, tokenService };
   },
   { immediate: true } // Se ejecuta al montar (igual que el primer render de React)
 );
-
-// Limpieza de seguridad al destruir el componente
-onUnmounted(() => {
-  if (currentClient?.disconnectWebSocket) {
-    currentClient.disconnectWebSocket();
-  }
-});
 
 // Proveemos el contexto a los hijos
 provide(SpaceContextKey, contextValue);
