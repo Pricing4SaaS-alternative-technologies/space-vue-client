@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
-import { useTokenService } from '@/hooks/useTokenService';
-import { usePricingTokenPayload } from '@/hooks/usePricingTokenPayload';
+import { useTokenService } from '../hooks/useTokenService';
+import { usePricingTokenPayload } from '../hooks/usePricingTokenPayload';
 
 // 1. Props
 const props = defineProps<{
@@ -83,21 +83,24 @@ watch(tokenPayload, evaluate);
 </script>
 
 <template>
-  <template v-if="status === 'loading'">
-    <slot name="loading" />
-  </template>
+  <div class="feature-wrapper">
+    
+    <template v-if="status === 'loading'">
+      <slot name="loading" />
+    </template>
 
-  <template v-else-if="status === 'error'">
-    <slot name="errorFallback" />
-  </template>
+    <template v-else-if="status === 'error'">
+      <slot name="errorFallback" />
+    </template>
 
-  <template v-else-if="status === 'success' && result === true">
-    <slot name="on" />
-    <slot />
-  </template>
+    <template v-else-if="status === 'success' && result === true">
+      <slot name="on" />
+      <slot />
+    </template>
 
-  <template v-else-if="status === 'success' && result === false">
-    <slot name="default" />
-  </template>
+    <template v-else-if="status === 'success' && result === false">
+      <slot name="default" />
+    </template>
 
+  </div>
 </template>

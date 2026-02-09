@@ -1,5 +1,5 @@
 import vue from 'rollup-plugin-vue';
-import typescript from '@rollup/plugin-typescript';
+import esbuild from 'rollup-plugin-esbuild';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
@@ -30,23 +30,23 @@ export default {
   external: ['vue', 'jwt-decode', 'tiny-emitter', 'socket.io-client', 'axios'],
   plugins: [
     external(),
-    // PRIMERO: TypeScript debe procesar .ts
-    typescript({
-      tsconfig: './tsconfig.json',
-      sourceMap: false,
-      inlineSources: false
-    }),
-    // LUEGO: Vue procesa .vue (si existen)
     vue({
+      preprocessStyles: true,
       css: false,
-      template: {
-        isProduction: true
-      }
     }),
-    // FINALMENTE: Resolver imports
+    esbuild({
+      // Incluimos archivos TS y también los virtuales de Vue
+      include: /\.[jt]sx?$/, 
+      exclude: /node_modules/,
+      sourceMap: false,
+      minify: false,
+      target: 'es2015',
+      loaders: {
+        '.vue': 'ts', // Le decimos que trate el contenido de los .vue como TS
+      },
+    }),
     resolve({
-      extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
-      mainFields: ['module', 'main']
+      extensions: ['.ts', '.d.ts', '.js', '.vue', '.json'],
     }),
     commonjs(),
     terser()

@@ -48,8 +48,9 @@
     "@vue/composition-api": "^1.7.0"
   },
   "peerDependenciesMeta": {
-  "@vue/composition-api": {
-    "optional": true
+    "@vue/composition-api": {
+      "optional": true
+    }
   },
   "dependencies": {
     "jwt-decode": "^4.0.0",
@@ -61,8 +62,9 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.3",
-    "@rollup/plugin-typescript": "^11.1.5",
+    "esbuild": "^0.20.0",
     "rollup": "^3.29.5",
+    "rollup-plugin-esbuild": "^6.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-vue": "^5.1.9",
     "tslib": "^2.6.2",
