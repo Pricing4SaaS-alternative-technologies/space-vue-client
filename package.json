@@ -44,13 +44,17 @@
   "license": "MIT",
   "author": "Daniel Benito Hidalgo danbenhid@alum.us.es Pablo Jesus Castellanos Compaña pabcascom@alum.us.es Fernando Jose de Celis Hurtado ferdehur@alum.us.es",
   "peerDependencies": {
-    "vue": "^2.5.0 || ^2.6.0 || ^2.7.0"
+    "vue": "^2.5.0 || ^2.6.0 || ^2.7.0",
+    "@vue/composition-api": "^1.7.0"
+  },
+  "peerDependenciesMeta": {
+  "@vue/composition-api": {
+    "optional": true
   },
   "dependencies": {
     "jwt-decode": "^4.0.0",
     "tiny-emitter": "^2.1.0",
-    "axios": "^1.6.0",
-    "socket.io-client": "^4.7.2"
+    "axios": "^1.6.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

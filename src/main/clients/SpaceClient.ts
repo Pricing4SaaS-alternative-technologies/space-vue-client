@@ -3,6 +3,7 @@ import type { SpaceEvents, SpaceConfiguration } from '@/types';
 import axios, { AxiosInstance } from 'axios';
 import { TokenService } from '@/services/token';
 
+
 /**
  * SpaceClient handles API and WebSocket communication with SPACE.
  * It allows event subscription and provides feature evaluation methods.
