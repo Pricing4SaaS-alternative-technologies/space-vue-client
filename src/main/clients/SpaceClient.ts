@@ -1,7 +1,7 @@
 import { TinyEmitter } from 'tiny-emitter';
 import type { SpaceEvents, SpaceConfiguration } from '@/types';
 import axios, { AxiosInstance } from 'axios';
-import { TokenService } from '@/services/token';
+import { TokenService } from '../services/token';
 
 
 /**

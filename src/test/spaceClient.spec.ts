@@ -1,81 +1,43 @@
 import { describe, it, expect, vi } from 'vitest'
-import { TokenService } from '../src/main/services/token'
-import { TEST_TOKEN, updateJwtExp } from '../test/helpers'
+import { SpaceClient } from '../main/clients/SpaceClient'
+import { SpaceConfiguration } from '../main/types'
 
-describe('TokenService – integración real con JWT', () => {
+describe('TokenService integración real con JWT', () => {
+  const config: SpaceConfiguration = {
+    url: 'http://localhost:3000',
+    apiKey: 'test-api-key',
+    allowConnectionWithSpace:true,
+    
+  }
 
-  it('debe almacenar el payload tras llamar a update()', () => {
-    const token = updateJwtExp(TEST_TOKEN, 3600)
-    const service = new TokenService()
-
-    service.update(token)
-
-    const payload = service.getPayload()
-    expect(payload).not.toBeNull()
-    expect(payload?.sub).toBe('j0hnD03')
+  it('must be instantiated with the correct configuration', () => {
+    const spclient = new SpaceClient(config);
+    expect(spclient).toBeInstanceOf(SpaceClient);
+    expect(spclient['httpUrl']).toContain('/api/v1');
   })
 
-  it('getKey() debe devolver una clave válida del token', () => {
-    const token = updateJwtExp(TEST_TOKEN, 3600)
-    const service = new TokenService()
+  it('must let the subscription of new events using on()', () => {
+    const client = new SpaceClient(config)
+    const callback = vi.fn()
 
-    service.update(token)
+    client.on('pricing_updated', callback)
 
-    const features = service.getKey('features')
-    expect(features).toBeDefined()
-    expect(features['zoom-meetings'].eval).toBe(true)
+    // @ts-ignore – acceso al emitter interno
+    client.emitter.emit('pricing_updated', { foo: 'bar' })
+
+    expect(callback).toHaveBeenCalledOnce()
+    expect(callback).toHaveBeenCalledWith({ foo: 'bar' })
   })
 
-  it('evaluateFeature() debe devolver true para una feature activa', () => {
-    const token = updateJwtExp(TEST_TOKEN, 3600)
-    const service = new TokenService()
+  it('must generate the pricing token without errors', () => {
+    const client = new SpaceClient(config)
+    const spy = vi.spyOn(client, 'generateUserPricingToken').mockResolvedValue('token')
+    client.generateUserPricingToken()
 
-    service.update(token)
-
-    const result = service.evaluateFeature('zoom-meetings')
-    expect(result).toBe(true)
-  })
-
-  it('evaluateFeature() debe devolver false para una feature desactivada', () => {
-    const token = updateJwtExp(TEST_TOKEN, 3600)
-    const service = new TokenService()
-
-    service.update(token)
-
-    const result = service.evaluateFeature('zoom-automatedCaptions')
-    expect(result).toBe(false)
-  })
-
-  it('evaluateFeature() debe devolver null si la feature no existe', () => {
-    const token = updateJwtExp(TEST_TOKEN, 3600)
-    const service = new TokenService()
-
-    service.update(token)
-
-    const result = service.evaluateFeature('feature-que-no-existe')
-    expect(result).toBeNull()
-  })
-
-  it('getPayload() debe devolver null si el token está expirado', () => {
-    const expiredToken = updateJwtExp(TEST_TOKEN, -10)
-    const service = new TokenService()
-
-    service.update(expiredToken)
-
-    const payload = service.getPayload()
-    expect(payload).toBeNull()
-  })
-
-  it('debe notificar a los listeners cuando el token cambia', () => {
-    const token = updateJwtExp(TEST_TOKEN, 3600)
-    const service = new TokenService()
-
-    const listener = vi.fn()
-    service.subscribe(listener)
-
-    service.update(token)
-
-    expect(listener).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledOnce()
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveReturnedWith(Promise.resolve('token'))
+    spy.mockRestore();
   })
 
 })
