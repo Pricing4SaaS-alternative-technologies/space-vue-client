@@ -26,10 +26,10 @@
   "scripts": {
     "dev": "rollup -c rollup.config.mjs -w",
     "build": "rollup -c rollup.config.mjs",
-    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist/types --skipLibCheck",
     "build:all": "npm run build && npm run build:types",
     "test": "vitest",
-    "clean": "rm -rf dist",
+    "clean": "rd /s /q dist",
     "clean:win": "rmdir /s /q dist",
     "prepack": "npm run build && npm run build:types",
     "prepublishOnly": "npm run build && npm run build:types"
