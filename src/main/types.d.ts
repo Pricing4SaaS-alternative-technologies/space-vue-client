@@ -1,14 +1,8 @@
-import React from 'react';
-
 export type { SpaceClient } from './clients/SpaceClient';
 export type { TokenService } from './services/token';
 
 export type SpaceEvents =
-  | 'synchronized'
-  | 'pricing_created'
-  | 'pricing_archived'
-  | 'pricing_actived'
-  | 'service_disabled'
+  | 'pricing_updated'
   | 'error';
 
 export interface SpaceConfiguration {
@@ -22,4 +16,4 @@ export interface SpaceClientContext{
   tokenService: TokenService;
 }
 
-export type * from './types/Events';
+export * from './types/Events';

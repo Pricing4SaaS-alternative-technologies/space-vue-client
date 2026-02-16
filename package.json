@@ -44,21 +44,27 @@
   "license": "MIT",
   "author": "Daniel Benito Hidalgo danbenhid@alum.us.es Pablo Jesus Castellanos Compaña pabcascom@alum.us.es Fernando Jose de Celis Hurtado ferdehur@alum.us.es",
   "peerDependencies": {
-    "vue": "^2.5.0 || ^2.6.0 || ^2.7.0"
+    "vue": "^2.5.0 || ^2.6.0 || ^2.7.0",
+    "@vue/composition-api": "^1.7.0"
+  },
+  "peerDependenciesMeta": {
+    "@vue/composition-api": {
+      "optional": true
+    }
   },
   "dependencies": {
     "jwt-decode": "^4.0.0",
     "tiny-emitter": "^2.1.0",
-    "axios": "^1.6.0",
-    "socket.io-client": "^4.7.2"
+    "axios": "^1.6.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.3",
-    "@rollup/plugin-typescript": "^11.1.5",
+    "esbuild": "^0.20.0",
     "rollup": "^3.29.5",
+    "rollup-plugin-esbuild": "^6.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-vue": "^5.1.9",
     "tslib": "^2.6.2",

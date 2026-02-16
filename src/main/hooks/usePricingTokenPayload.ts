@@ -1,25 +1,30 @@
-import { useEffect, useState } from 'react';
+import { shallowRef, onMounted, onUnmounted, type Ref } from 'vue';
 import { useTokenService } from './useTokenService';
 
 /**
- * React hook that returns the current pricing token payload and
- * re-renders when the token changes. TODO IMPLEMENTAR CON VUE
+ * Vue composable que retorna el payload del token de precios.
  */
 export function usePricingTokenPayload<T extends Record<string, any> = Record<string, any>>() {
   const tokenService = useTokenService();
-  const [payload, setPayload] = useState<T | null>(() => tokenService.getPayload() as T | null);
+  const payload = shallowRef<T | null>(tokenService.getPayload() as T | null);
 
-  useEffect(() => {
-    // Ensure latest value on mount
-    setPayload(tokenService.getPayload() as T | null);
+  const updatePayload = () => {
+    payload.value = tokenService.getPayload() as T | null;
+  };
 
-    // Subscribe to token updates
-    const unsubscribe = tokenService.subscribe(() => {
-      setPayload(tokenService.getPayload() as T | null);
-    });
+  let unsubscribe: (() => void) | null = null;
 
-    return () => unsubscribe();
-  }, [tokenService]);
+  onMounted(() => {
+    // Asegurar la actualización al montar
+    updatePayload(); 
+    unsubscribe = tokenService.subscribe(updatePayload);
+  });
+
+  onUnmounted(() => {
+    if (unsubscribe) {
+      unsubscribe();
+    }
+  });
 
   return payload;
 }

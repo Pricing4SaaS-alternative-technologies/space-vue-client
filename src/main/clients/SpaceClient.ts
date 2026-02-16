@@ -1,8 +1,8 @@
 import { TinyEmitter } from 'tiny-emitter';
 import type { SpaceEvents, SpaceConfiguration } from '@/types';
 import axios, { AxiosInstance } from 'axios';
-import { TokenService } from '@/services/token';
-import { io, Socket } from 'socket.io-client';
+import { TokenService } from '../services/token';
+
 
 /**
  * SpaceClient handles API and WebSocket communication with SPACE.
@@ -10,12 +10,6 @@ import { io, Socket } from 'socket.io-client';
  */
 export class SpaceClient {
   private readonly httpUrl: string;
-  private readonly wsUrl: string;
-  private readonly socketClient: Socket;
-  /**
-   * The WebSocket namespace specifically for pricing-related events.
-   */
-  private readonly pricingSocketNamespace: Socket;
   private readonly apiKey: string;
   private readonly axios: AxiosInstance;
   private readonly emitter: any;
@@ -26,12 +20,7 @@ export class SpaceClient {
     this.httpUrl = config.url.endsWith('/')
       ? config.url.slice(0, -1) + '/api/v1'
       : config.url + '/api/v1';
-    this.wsUrl = config.url.replace(/^http/, 'ws') + '/events/pricings';
-    this.socketClient = io(this.wsUrl, {
-      path: '/events',
-      transports: ['websocket'],
-    });
-    this.pricingSocketNamespace = this.socketClient.io.socket('/pricings');
+
     this.apiKey = config.apiKey;
     this.emitter = new TinyEmitter();
     this.token = new TokenService();
@@ -42,34 +31,6 @@ export class SpaceClient {
         'Content-Type': 'application/json',
         'x-api-key': `${this.apiKey}`,
       },
-    });
-
-    this.connectWebSocket();
-  }
-
-  disconnectWebSocket() {
-    if (this.pricingSocketNamespace.connected) {
-      this.pricingSocketNamespace.disconnect();
-      this.emitter.off(); // Remove all listeners
-    }
-  }
-
-  /**
-   * Connects to the SPACE WebSocket and handles incoming events.
-   */
-  connectWebSocket() {
-    this.pricingSocketNamespace.on('connect', () => {
-      console.log('Connected to SPACE');
-      this.emitter.emit('synchronized', 'WebSocket connection established');
-    });
-
-    this.pricingSocketNamespace.on('message', (data: any) => {
-      const event = (data.code as SpaceEvents).toLowerCase();
-      this.emitter.emit(event, data.details);
-    });
-
-    this.pricingSocketNamespace.on('connect_error', (error: any) => {
-      this.emitter.emit('error', error);
     });
   }
 
@@ -90,14 +51,10 @@ export class SpaceClient {
     if (typeof callback !== 'function') {
       throw new Error(`Callback for event '${event}' must be a function.`);
     }
-
+    // comprobamos que los eventos sean los correctos
     if (
       [
-        'synchronized',
-        'pricing_created',
-        'pricing_archived',
-        'pricing_actived',
-        'service_disabled',
+        'pricing_updated',
         'error',
       ].indexOf(event) === -1
     ) {
@@ -141,6 +98,8 @@ export class SpaceClient {
     const userPricingToken = await this.generateUserPricingToken();
 
     this.token.update(userPricingToken);
+    // importante generar el evento del pricing_updated
+    this.emitter.emit('pricing_updated', userPricingToken)
   }
 
   /**
@@ -155,15 +114,12 @@ export class SpaceClient {
         'User ID is not set. Please set the user ID with `setUserId(userId)` before trying to generate a pricing token.',
       );
     }
-
-    return this.axios
-      .post(`/features/${this.userId}/pricing-token`)
-      .then((response) => {
-        return response.data.pricingToken;
-      })
-      .catch((error) => {
-        console.error(`Error generating pricing token for user ${this.userId}:`, error);
-        throw error;
-      });
+    try {
+      const response = await this.axios.post(`/features/${this.userId}/pricing-token`)
+      return response.data.pricingToken
+    } catch (error) {
+      this.emitter.emit('error', error)
+      throw error
+    }
   }
 }
