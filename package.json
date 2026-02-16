@@ -1,6 +1,9 @@
 {
-  "name": "@tu-org/space-vue-client",
-  "version": "0.1.0",
+  "name": "@petclinic-alternativo/space-vue-client",
+  "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Vue 2 client for SPACE-style feature gating using pricing tokens",
   "main": "dist/space-vue-client.umd.js",
   "module": "dist/space-vue-client.es.js",
