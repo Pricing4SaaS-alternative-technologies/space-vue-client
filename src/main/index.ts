@@ -7,3 +7,6 @@ export { usePricingTokenPayload } from './hooks/usePricingTokenPayload';
 export { default as Feature } from './components/Feature.vue';
 
 export * from './types';
+
+import { tokenService } from './services/token';
+export { tokenService };
