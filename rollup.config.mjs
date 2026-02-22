@@ -4,7 +4,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
 import external from 'rollup-plugin-peer-deps-external';
-import json from '@rollup/plugin-json'; 
+import json from '@rollup/plugin-json';
 
 export default {
   input: 'src/main/Index.ts',
@@ -28,7 +28,7 @@ export default {
       exports: 'named'
     }
   ],
-  external: ['vue', 'jwt-decode', 'tiny-emitter', 'socket.io-client'],
+  external: ['vue', 'jwt-decode', 'tiny-emitter', 'socket.io-client', 'axios'],
   plugins: [
     external(),
     vue({
@@ -38,7 +38,7 @@ export default {
     esbuild({
       // Incluimos archivos TS y también los virtuales de Vue
       include: /\.[jt]sx?$/, 
-      exclude: /node_modules\/(?!axios)/,
+      exclude: /node_modules/,
       sourceMap: false,
       minify: false,
       target: 'es2015',
@@ -47,14 +47,10 @@ export default {
       },
     }),
     resolve({
-      extensions: ['.ts', '.js', '.vue', '.json'],
+      extensions: ['.ts', '.d.ts', '.js', '.vue', '.json'],
     }),
     json(),
-    commonjs({
-      ignoreTryCatch: false,
-      include: /node_modules/,
-      extensions: ['.js', '.cjs', '.ts'], // quitar .d.ts
-    }),
+    commonjs(),
     terser()
   ]
 };
