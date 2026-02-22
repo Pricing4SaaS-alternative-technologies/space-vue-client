@@ -27,7 +27,7 @@ export default {
       exports: 'named'
     }
   ],
-  external: ['vue', 'jwt-decode', 'tiny-emitter', 'socket.io-client', 'axios'],
+  external: ['vue', 'jwt-decode', 'tiny-emitter', 'socket.io-client'],
   plugins: [
     external(),
     vue({
@@ -37,7 +37,7 @@ export default {
     esbuild({
       // Incluimos archivos TS y también los virtuales de Vue
       include: /\.[jt]sx?$/, 
-      exclude: /node_modules/,
+      exclude: /node_modules\/(?!axios)/,
       sourceMap: false,
       minify: false,
       target: 'es2015',
