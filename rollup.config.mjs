@@ -4,6 +4,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
 import external from 'rollup-plugin-peer-deps-external';
+import json from '@rollup/plugin-json'; 
 
 export default {
   input: 'src/main/Index.ts',
@@ -46,9 +47,14 @@ export default {
       },
     }),
     resolve({
-      extensions: ['.ts', '.d.ts', '.js', '.vue', '.json'],
+      extensions: ['.ts', '.js', '.vue', '.json'],
     }),
-    commonjs(),
+    json(),
+    commonjs({
+      ignoreTryCatch: false,
+      include: /node_modules/,
+      extensions: ['.js', '.cjs', '.ts'], // quitar .d.ts
+    }),
     terser()
   ]
 };
