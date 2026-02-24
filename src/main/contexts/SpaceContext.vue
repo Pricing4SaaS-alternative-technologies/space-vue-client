@@ -5,7 +5,7 @@ import { SpaceClient as SpaceClientClass } from "../clients/SpaceClient";
 import { TokenService } from "../services/token";
 import type { SpaceConfiguration, SpaceClientContext } from "../types";
 
-export const SpaceContextKey: symbol = Symbol('SpaceContext');
+export const SpaceContextKey = 'SpaceContext';
 
 export default defineComponent({
   name: 'SpaceProvider',
@@ -18,31 +18,42 @@ export default defineComponent({
   },
 
   setup(props) {
-    const contextValue: ShallowRef<SpaceClientContext | undefined> = shallowRef();
-    let currentClient: SpaceClientClass | undefined;
 
-    watch(
-      () => [props.config.url, props.config.apiKey, props.config.allowConnectionWithSpace],
-      () => {
-        const denyConnection = props.config.allowConnectionWithSpace === false;
-        const client = denyConnection ? undefined : new SpaceClientClass(props.config);
+    // 🔹 1. Crear cliente inicial inmediatamente (NUNCA undefined)
+    const createContext = (): SpaceClientContext => {
+      const denyConnection = props.config.allowConnectionWithSpace === false;
 
-        let tokenService: TokenService;
-        if (!client) {
-          tokenService = new TokenService();
-        } else {
-          tokenService = client.token;
-        }
+      const client = denyConnection
+        ? undefined
+        : new SpaceClientClass(props.config);
 
-        currentClient = client;
-        contextValue.value = { client, tokenService };
-      },
-      { immediate: true }
-    );
+      const tokenService = client
+        ? client.token
+        : new TokenService();
 
+      return { client, tokenService };
+    };
+
+    // 🔹 2. Inicializar contexto con valor válido
+    const contextValue: ShallowRef<SpaceClientContext> =
+      shallowRef(createContext());
+
+    // 🔹 3. Proveer inmediatamente (sin estado intermedio undefined)
     provide(SpaceContextKey, contextValue);
 
-    return {}; // no necesitamos exponer nada al template
+    // 🔹 4. Reactividad cuando cambie config
+    watch(
+      () => [
+        props.config.url,
+        props.config.apiKey,
+        props.config.allowConnectionWithSpace
+      ],
+      () => {
+        contextValue.value = createContext();
+      }
+    );
+
+    return {};
   }
 });
 </script>
