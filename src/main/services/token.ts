@@ -1,4 +1,3 @@
-
 function parseJwt(token: string) {
   return JSON.parse(atob(token.split('.')[1]));
 }
@@ -56,14 +55,32 @@ export class TokenService {
     this._notify();
   }
 
+  /**
+   * Clears the stored pricing token (useful for logouts).
+   */
+  clear(): void {
+    this.tokenPayload = null;
+    this._notify();
+  }
+
   evaluateFeature(featureId: string): boolean | null {
     if (!this._validToken()) {
       return false;
     }
 
-    // Check if the feature exists in the token payload
-    if (this.tokenPayload?.features?.[featureId]) {
-      return this.tokenPayload!.features[featureId].eval;
+    const features = this.tokenPayload?.features;
+
+    // Comprobamos que exista, incluso si su valor es false
+    if (features && features[featureId] !== undefined) {
+      const featureValue = features[featureId];
+      
+      // Si el backend lo manda como objeto { eval: true }
+      if (typeof featureValue === 'object' && featureValue !== null) {
+        return featureValue.eval;
+      }
+      
+      // Si el backend lo manda como booleano directo (true/false)
+      return Boolean(featureValue);
     } else {
       console.warn(`Feature '${featureId}' not found in token payload.`);
       return null;

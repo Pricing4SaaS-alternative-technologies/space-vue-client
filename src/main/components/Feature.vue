@@ -1,5 +1,5 @@
 <script lang="ts">
-import {ref,computed,watch,onMounted,onUnmounted,defineComponent} from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted, defineComponent } from 'vue';
 
 import { useTokenService } from '../hooks/useTokenService';
 import { usePricingTokenPayload } from '../hooks/usePricingTokenPayload';
@@ -91,11 +91,10 @@ export default defineComponent({
 
     <template v-else-if="status === 'success' && result === true">
       <slot name="on" />
-      <slot />
-    </template>
+      <slot /> </template>
 
     <template v-else-if="status === 'success' && result === false">
-      <slot name="default" />
+      <slot name="fallback" />
     </template>
 
   </div>

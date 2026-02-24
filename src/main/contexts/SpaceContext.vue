@@ -5,7 +5,8 @@ import { SpaceClient as SpaceClientClass } from "../clients/SpaceClient";
 import { TokenService } from "../services/token";
 import type { SpaceConfiguration, SpaceClientContext } from "../types";
 
-export const SpaceContextKey = 'SpaceContext';
+import { SpaceContextKey } from '../contexts/SpaceContextTypes';
+import { tokenService as globalTokenService } from "../services/token";
 
 export default defineComponent({
   name: 'SpaceProvider',
@@ -29,7 +30,7 @@ export default defineComponent({
 
       const tokenService = client
         ? client.token
-        : new TokenService();
+        : globalTokenService;
 
       return { client, tokenService };
     };
